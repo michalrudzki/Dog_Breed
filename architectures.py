@@ -466,51 +466,6 @@ def arch_10(image_shape, num_classes, callbacks, train_generator, nb_train_sampl
     acc_train, acc_val, acc_test, loss_train, loss_val, loss_test, stop_after_epoch = evaluation(model,test_generator,nb_test_samples,batch_size)
     return model, [acc_train, acc_val, acc_test, loss_train, loss_val, loss_test, stop_after_epoch]
 
-def arch_11(image_shape, num_classes, callbacks, train_generator, nb_train_samples,validation_generator,nb_validation_samples,\
-          batch_size,test_generator,nb_test_samples,regularizer,optimizer):
-    
-    model = Sequential([
-        Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same', input_shape=image_shape),
-        Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
-        MaxPool2D(pool_size=(2, 2)),
-
-        Conv2D(64, kernel_size=(3, 3), activation='relu', padding='same'),
-        Conv2D(64, kernel_size=(3, 3), activation='relu', padding='same'),
-        MaxPool2D(pool_size=(2, 2)),
-
-        Conv2D(128, kernel_size=(3, 3), activation='relu', padding='same'),
-        Conv2D(128, kernel_size=(3, 3), activation='relu', padding='same'),
-        Conv2D(128, kernel_size=(3, 3), activation='relu', padding='same'),
-        MaxPool2D(pool_size=(2, 2)),
-        
-        Conv2D(256, kernel_size=(3, 3), activation='relu', padding='same'),
-        Conv2D(256, kernel_size=(3, 3), activation='relu', padding='same'),
-        Conv2D(256, kernel_size=(3, 3), activation='relu', padding='same'),
-        MaxPool2D(pool_size=(2, 2)),
-
-        Flatten(), 
-
-        Dense(512, activation='relu', kernel_regularizer=regularizer),
-        Dropout(0.3),
-
-        Dense(num_classes, activation='softmax')
-    ])
-    model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
-    model.summary()
-    
-    model.fit_generator(train_generator,\
-                        samples_per_epoch=nb_train_samples, \
-                        epochs=100,\
-                        validation_data=validation_generator, \
-                        validation_steps=math.ceil(nb_validation_samples / batch_size),\
-                        workers=16,\
-                        use_multiprocessing=True,\
-                        callbacks=callbacks)
-
-    acc_train, acc_val, acc_test, loss_train, loss_val, loss_test, stop_after_epoch = evaluation(model,test_generator,nb_test_samples,batch_size)
-    return model, [acc_train, acc_val, acc_test, loss_train, loss_val, loss_test, stop_after_epoch]
-
-
 
 def arch_TL_1(image_shape, num_classes, callbacks, train_generator, \
                      nb_train_samples,validation_generator,nb_validation_samples,\
